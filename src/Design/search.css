@@ -1,0 +1,360 @@
+
+
+
+.search-box{
+
+    width: 50%;  
+
+    padding:20px;
+
+}
+
+ 
+
+.lighttheme{
+
+  background-color: #f9f7f3;
+
+}
+
+ 
+
+.search-facility{
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 40px;
+
+    padding-top: 40px;
+
+}
+
+ 
+
+.search-facility button{
+
+  padding: 5px 15px;
+
+  font-size: 14px;
+
+}
+
+ 
+
+.heading{
+
+    font-size: 24px;
+
+    font-weight: 600;
+
+    color: white;
+
+    letter-spacing: 0.2cm;  
+
+}
+
+ 
+
+.disabled-button{
+
+    border-radius: 4px;
+
+    background-color:#dea400;
+
+    border: none;
+
+    color: black;
+
+    text-align: center;
+
+    margin-left: 12px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition: all 0.5s;
+
+    cursor: pointer;
+
+}
+
+ 
+
+.button {
+
+    border-radius: 4px;
+
+    background-color:#ffbd00;
+
+    border: none;
+
+    color: black;
+
+    text-align: center;
+
+    margin-left: 12px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition: all 0.5s;
+
+    cursor: pointer;
+
+   
+
+  }
+
+ 
+
+  .button span {
+
+    cursor: pointer;
+
+    display: inline-block;
+
+    position: relative;
+
+    transition: 0.5s;
+
+  }
+
+ 
+
+  .button span:after {
+
+    font-weight: 700;
+
+    font-family: FontAwesome;
+
+    content: "\f002";
+
+    position: absolute;
+
+    opacity: 0;
+
+    top: 0;
+
+    right: -20px;
+
+    transition: 0.5s;
+
+  }
+
+ 
+
+  .button:hover span {
+
+    padding-right: 25px;
+
+  }
+
+ 
+
+  .button:hover span:after {
+
+    opacity: 1;
+
+    right: 0;
+
+  }
+
+ 
+
+  .watchlist-btn {
+
+    border-radius: 10px;
+
+    border-style: none;
+
+    background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+
+    box-sizing: border-box;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    margin: 0;
+
+    padding: 5px 12px;
+
+    text-align: center;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: manipulation;
+
+  }
+
+ 
+
+.alert-dialog-title{
+
+  padding: 20px;
+
+}
+
+ 
+
+  .watchlist-btn:active {
+
+    background-color: #006AE8;
+
+  }
+
+ 
+
+  .watchlist-btn:hover {
+
+    background-color: #1C84FF;
+
+  }
+
+ 
+
+  .menus{
+
+    display: flex;
+
+    justify-content: end;
+
+    gap: 10px;
+
+    align-items: center;
+
+  }
+
+ 
+
+  .movies-list{
+
+    padding: 0px 80px 0px 80px ;
+
+  }
+
+ 
+
+ 
+
+ 
+
+  #data{
+
+    width: 100%;
+
+    min-height: 65vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    font-size: 24px;
+
+    font-weight: 600;
+
+    align-items: center;
+
+  }
+
+ 
+
+  #noDataImg{
+
+    width: 500px;
+
+   
+
+  }
+
+ 
+
+  #bottom-pagination{
+
+    display: flex;
+
+    justify-content: center;
+
+    padding: 10px;
+
+  }
+
+ 
+
+  .not-found{
+
+    font-size: 24px;
+
+  }
+
+ 
+
+  #parentDivWelcomeImg{
+
+    width: 100%;
+
+    display: flex;
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    justify-content: center;
+
+    align-items: center;
+
+  }
+
+ 
+
+  @media (max-width:768px){
+
+  .movies-list{
+
+    padding: 10px 20px 0px 20px;
+
+  }
+
+  .search-box{
+
+    width: 65%;
+
+  }
+
+ 
+
+  .movieCard{
+
+    padding-inline: 40px;
+
+  }
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+ @media(max-width:992px){
+
+  .mainScreen{
+
+    min-height: 100vh;
+
+  }
+
+ }
+
+ 

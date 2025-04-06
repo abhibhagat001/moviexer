@@ -1,0 +1,293 @@
+
+ 
+
+.movie-card{
+
+    border-radius: 10px;
+
+    box-shadow: 0px 4px 5px 0px #888;
+
+    margin: 0 5px;
+
+    overflow: hidden;    
+
+}
+
+ 
+
+img{
+
+    width: 100%;
+
+    height: auto;
+
+}
+
+ 
+
+.blur{
+
+    filter: blur(5px);
+
+}
+
+ 
+
+.card-title{
+
+    font-size: 14px;
+
+}
+
+ 
+
+.card-body{
+
+    padding: 20px;
+
+    cursor: pointer;
+
+}
+
+ 
+
+.img-fluid{
+
+    height: 300px;
+
+}
+
+ 
+
+.flip-card-inner {
+
+position: relative;
+
+width: 100%;
+
+height: 300px;
+
+text-align: center;
+
+transition: transform 0.6s;
+
+transform-style: preserve-3d;
+
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+
+}
+
+ 
+
+.flip-card:hover .flip-card-inner {
+
+transform: rotateY(180deg);
+
+}
+
+ 
+
+.flip-card-back {
+
+background-color: black;
+
+color: white;
+
+transform: rotateY(180deg);
+
+ 
+
+}
+
+ 
+
+.flip-card-back {
+
+   display: flex;
+
+   justify-content: center;
+
+   align-items: center;
+
+   gap: 28px;
+
+}
+
+ 
+
+.flip-card-front {
+
+background-color: #bbb;
+
+color: black;
+
+}
+
+ 
+
+.flip-card-front, .flip-card-back {
+
+position: absolute;
+
+width: 100%;
+
+height:300px;
+
+-webkit-backface-visibility: hidden;
+
+backface-visibility: hidden;
+
+}
+
+ 
+
+.button-62 {
+
+    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+
+    border: 0;
+
+    border-radius: 12px;
+
+    color: #FFFFFF;
+
+    cursor: pointer;
+
+    display: inline-block;
+
+    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    line-height: 2.5;
+
+    outline: transparent;
+
+    padding: 0 1rem;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    transition: box-shadow .2s ease-in-out;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: manipulation;
+
+    white-space: nowrap;
+
+  }
+
+ 
+
+  .card-btn{
+
+    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+
+    border: 0;
+
+    border-radius: 12px;
+
+    color: #FFFFFF;
+
+    cursor: pointer;
+
+    display: inline-block;
+
+    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    line-height: 2.5;
+
+    outline: transparent;
+
+    padding: 0 1rem;
+
+    margin-left: 32px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    transition: box-shadow .2s ease-in-out;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: manipulation;
+
+    white-space: nowrap;
+
+  }
+
+ 
+
+  .button-62:not([disabled]):focus {
+
+    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+
+  }
+
+ 
+
+  .button-62:not([disabled]):hover {
+
+    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+
+  }
+
+
+.cls{
+
+    display: flex;
+
+    gap:10px;
+
+    align-items: center;
+
+}
+
+ 
+
+@media (max-width:768px){
+
+    .cls{
+
+      display: none;
+
+    }
+
+   }
+
+ 
+
+@media (min-width:786px) {
+
+    .hamburger-menu{
+
+        display: none;
+
+    }
+
+}
+
+ 
+
+@media only screen and (max-width:785px) {
+
+    .hamburger-menu{
+
+        display: block !important;
+
+    }
+
+}

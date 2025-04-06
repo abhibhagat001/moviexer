@@ -1,0 +1,38 @@
+ *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    transition: background-color ease 0.5s;
+}
+ 
+.bg-dark{
+    background-color: rgba(33,37,41,1);
+}
+ 
+.lighttheme{
+    background-color: #f9f7f3;
+}
+ 
+.userDetails input{
+    padding: 18px;
+}
+ 
+.userDetails label{
+    font-size: 16px;
+}
+ 
+ 
+
+ 
+ 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

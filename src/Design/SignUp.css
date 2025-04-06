@@ -1,0 +1,91 @@
+.content{
+
+    height: 100vh;
+
+}
+
+ 
+
+.signup-container{
+
+    background: url('https://img.freepik.com/free-vector/seamless-pattern-with-cinema-elements_225004-1154.jpg?t=st=1740469422~exp=1740473022~hmac=819dc771e309ab8a6b6a17bbf0e7da7d998daa8888a6024b8a0e6ea0986a8e0c&w=1060') center center no-repeat;
+
+    background-size: cover;
+
+    background-color: #f0f0f0;
+
+}
+
+ 
+
+.sign-up{
+
+    border-radius: 20px;
+
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+}
+
+ 
+
+.invalid-input{
+
+    color: red;
+
+}
+
+ 
+
+.inputs{
+
+    border:1px solid red
+
+}
+
+ 
+
+.SignUpImg{
+
+    width: 150px;
+
+}
+
+ 
+
+.password-container{
+
+    position: relative;
+
+}
+
+ 
+
+.password-container .eye-icon{
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+}
+
+ 
+
+.password-container .close-eye-icon{
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+}
