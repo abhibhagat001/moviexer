@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+## 📽️ Moviexer – React Movie Search Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Moviexer is a sleek and responsive web application built with React.js that allows users to search for movies using the OMDB API.
+It includes features like movie detail view, watchlist, responsive UI, dark mode, and rating displays from popular platforms.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+🔍 Search movies via OMDB API
 
-### `npm start`
+📄 View detailed movie information
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🌙 Dark mode toggle
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+❤️ Add movies to a personal watchlist
 
-### `npm test`
+⭐ Shows IMDB, Metacritic, and Rotten Tomatoes ratings
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+💾 Firestore database used for the saving watchlist
 
-### `npm run build`
+📱 Fully responsive design with React and Bootstrap
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Tech Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Frontend: React.js, JSX, Bootstrap,Material UI
 
-### `npm run eject`
+API: OMDB API
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+State Management: React Context API
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Icons: React Icons
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Routing: React Router DOM
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Database - Firestore
 
-## Learn More
+## ⚙️ Setup Instructions
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Clone the repository
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    git clone https://github.com/your-username/moviexer.git
 
-### Code Splitting
+    cd moviexer/movie-search
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. Install dependencies
 
-### Analyzing the Bundle Size
+    npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. Create .env file Add your OMDB API key:
 
-### Making a Progressive Web App
+4. Start the application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    npm start
 
-### Advanced Configuration
+## 🌐 Demo
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+## Contact
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    For any inquiries, feel free to reach out at 📩abhibhagat111213@gmail.com

@@ -2,7 +2,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
  
 const api = axios.create({
-  baseURL: `http://www.omdbapi.com`,
+  baseURL: `https://www.omdbapi.com`,
   timeout: 15000,
 });
  

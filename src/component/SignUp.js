@@ -6,7 +6,7 @@ import { app } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserContext";
 import * as EmailValidator from "email-validator";
-import Logo from "../Assests/background.jpg";
+import Logo from "../Assests/logo_.png";
 import { useContext } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";

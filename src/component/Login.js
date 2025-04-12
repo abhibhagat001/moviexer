@@ -7,7 +7,7 @@ import {
 import { app } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Logo from "../Assests/background.jpg";
+import Logo from "../Assests/logo_.png";
 import "../Design/Login.css";
 import * as EmailValidator from "email-validator";
  
