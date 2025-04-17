@@ -46,7 +46,7 @@ Database - Firestore
 
     npm install
 
-3. Create .env file Add your OMDB API key:
+3. Create .env file Add your Firebase configurations.
 
 4. Start the application
 
