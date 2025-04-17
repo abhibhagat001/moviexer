@@ -54,7 +54,37 @@ Database - Firestore
 
 ## 🌐 Demo
 
+ 🔗 https://movie-search-i79cafh1r-abhibhagat001s-projects.vercel.app/
 
 ## Contact
 
-    For any inquiries, feel free to reach out at 📩abhibhagat111213@gmail.com
+ Feel free to reach me out at abhibhagat111213@gmail.com 
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
