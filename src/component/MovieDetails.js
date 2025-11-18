@@ -61,7 +61,6 @@ function MovieDetails() {
       setIsLoading(false);
     } catch (err) {
       setOpenErrorBox(true);
-      // setIsLoading(false);
       if (err.code === "ERR_NETWORK") {
         setError(
           <>
