@@ -1,43 +1,20 @@
 import React, { useEffect , useState} from "react";
-import api
- from "../component/AxiosInstance";
+import api from "../component/AxiosInstance";
+
 const useFetchAPI = () =>{
 
-    const [movies, setMovies] = useState({
-        moviesArr:[],
-        totalResults:0
-    });
+    const [movies, setMovies] = useState(null)
     const [dataLoader, setDataLoader] = useState(false);
     const [error, setError] = useState("");
 
-    
-
-    const getMovieDetails = async (searchTerm,pageNo) =>{
-
-        if(searchTerm===''){
-            alert('Please Enter a movie name');
-            return ;
-        }
+    const getMovieDetails = async (endpoint,params) =>{
 
         try{
-            
             setDataLoader(true);
-            const response = await api.get(`/?s=${searchTerm.trim()}`,{params:{
-                apiKey: "2149ed44",
-                page: pageNo,
-            }},);
-            
+            const response = await api.get(endpoint,{params});
             const movieData = response.data;
             console.log(movieData);
-            setMovies({
-                moviesArr:movieData.Search || [],
-                totalResults:movieData.totalResults || 0});
-            
-            // setTotalResults(Math.ceil(response.data.totalResults / 10));
-
-
-
-
+            setMovies(movieData);
         }catch(err){
             if(err.response){
                 console.log(err.response.status);

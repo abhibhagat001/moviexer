@@ -26,7 +26,6 @@ export default function Search() {
   const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
 
 
-
   useEffect(()=>{
       const saved = JSON.parse(localStorage.getItem('movieState'));
       if(saved){
@@ -68,32 +67,23 @@ export default function Search() {
 
     if(searchTerm) {
       
-      getMovieDetails(searchTerm,currentPage);
-       window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-      });
+        let endpoint = `/`;
+        let params = {
+          apiKey: "2149ed44",
+          s: searchTerm.trim(),
+          page: currentPage,
+        }
+
+
+        getMovieDetails(endpoint,params);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
 
     }
 
-  },[currentPage,searchTerm]);
-
- 
-  // const handlePageChange = (event, pageNumber) => {
-
-    // window.scrollTo({
-
-    //   top: 0,
-
-    //   behavior: "smooth",
-
-    // });
-
-   
-
-
-  // };
-
+  },[currentPage]);
  
 
   // On click of ENTER key search movie
@@ -102,8 +92,15 @@ export default function Search() {
 
     if (e.key === "Enter") {
        setCurrentPage(1);
-       getMovieDetails(searchTerm);
-       setStartSearching(true);
+        let endpoint = `/`;
+        let params = {
+          apiKey: "2149ed44",
+          s: searchTerm.trim(),
+          page: currentPage,
+        }
+
+        getMovieDetails(endpoint,params);
+        setStartSearching(true);
 
     }
 
@@ -113,7 +110,13 @@ export default function Search() {
     setAnim(true);
     setCurrentPage(1);
     setStartSearching(true);
-    getMovieDetails(searchTerm,currentPage);
+    let endpoint = `/`;
+    let params = {
+      apiKey: "2149ed44",
+      s: searchTerm.trim(),
+      page: currentPage,
+    }
+    getMovieDetails(endpoint,params);
     setTimeout(() => setAnim(false), 500);
   }
  
@@ -206,23 +209,10 @@ export default function Search() {
           <div id="parentDivWelcomeImg">Start Searching Movies...</div>
         )}
  
-        {startSearching && movies.moviesArr.length===0 && !dataLoader && (
+        {startSearching && movies?.Search.length===0 && !dataLoader && (
           <div id="parentDivWelcomeImg">Movies Not Found.</div>
         )}
-
-        {/* when user first time open application show this text */}
-
-        {/* {movies.moviesArr.length===0 && (
-
-          <div id="parentDivWelcomeImg">Start Searching movies!!</div>
-
-        )} */}
-
      
-
-
-       
- 
 
         {/* Render the movie list */}
 
@@ -234,9 +224,9 @@ export default function Search() {
 
               {!dataLoader &&
 
-                movies.moviesArr !== null &&
+                movies?.Search !== null &&
 
-                movies.moviesArr.map((movie, index) => (
+                movies?.Search.map((movie, index) => (
 
                   <div
 
@@ -279,41 +269,24 @@ export default function Search() {
         </div>
 
  
-
-        
-
- 
-
         {/* pagination component */}
 
-        {movies.moviesArr.length>0 && !dataLoader &&  (
+        {movies?.Search.length>0 && !dataLoader &&  (
 
           <div id="bottom-pagination">
 
             <Pagination
-
-              count={Math.ceil(movies.totalResults / 10)}
-
+              count={parseInt(Math.ceil(movies?.totalResults / 10))}
               color="primary"
-
               onChange={(e, value) => setCurrentPage(value)}
-
               page={currentPage}
-
               sx={{
-
                 "& .MuiPaginationItem-root": {
-
                   color: darkMode ? "white" : "black",
-
                   fontWeight: "800",
-
                 },
-
               }}
-
             />
-
           </div>
 
         )}

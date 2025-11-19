@@ -24,71 +24,33 @@ import Button from "@mui/material/Button";
 import rotten_tomatoes from "../Assests/Rotten_Tomatoes.png";
 import imdb from "../Assests/IMDB.png";
 import meta from "../Assests/Metacritic.png";
-import api from "./AxiosInstance";
 import Dialogbox from "./Dialogbox";
+import useFetchAPI from "../Hooks/useFetchAPI";
  
 function MovieDetails() {
   const { darkMode, setDarkMode } = useContext(themeContext);
-  const [movieDetails, setMovieDetails] = useState("");
-  const [IsLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
+  const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
   const location = useLocation();
   const movieData = location.state;
  
   useEffect(() => {
-    const storedMovie = localStorage.getItem("movieDetail");
-    if (storedMovie) {
-      const parsedData = JSON.parse(storedMovie);
-      if (parsedData.Title === movieData) {
-        setMovieDetails(parsedData);
-        setIsLoading(false);
-        return;
-      }
+    // first check localStorage for cached details for this movie
+    const saved = JSON.parse(localStorage.getItem("movieDetailsState"));
+    if (saved && saved.movieData === movieData && saved.movies) {
+      setMovies(saved.movies);
+      return; 
     }
- 
-    fetchMovieDetails();
+
+    getMovieDetails(`/`, { t: movieData, apikey: "2149ed44" });
   }, [movieData]);
+
+  useEffect(() => {
+    localStorage.setItem("movieDetailsState", JSON.stringify({ movies, movieData }));
+  }, [movies, movieData]);
  
-  async function fetchMovieDetails() {
-    const apiKey = "2149ed44";
-    const url = `/?t=${movieData}&apikey=${apiKey}`;
-    try {
-      const response = await api.get(url);
-      setMovieDetails(response.data);
- 
-      localStorage.setItem("movieDetail", JSON.stringify(response.data));
-      setIsLoading(false);
-    } catch (err) {
-      setOpenErrorBox(true);
-      if (err.code === "ERR_NETWORK") {
-        setError(
-          <>
-            <i
-              class="fa-solid fa-wifi"
-              style={{ color: "#007BFF", fontWeight: "600" }}
-            ></i>{" "}
-            Please check your internet conncetion
-          </>
-        );
-      } else if (err.code === "ECONNABORTED") {
-        setError(
-          <>
-            <i
-              className="fa-regular fa-clock"
-              style={{ color: "#ff9800", fontWeight: "600" }}
-            ></i>{" "}
-            Request timeout
-          </>
-        );
-      } else {
-        setError("Error occurred");
-      }
-    }
-  }
  
   const [value, setValue] = React.useState("1");
- 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -111,7 +73,7 @@ function MovieDetails() {
           <Navbar>MOVIEXER</Navbar>
         </div>
  
-        {IsLoading ? (
+        {dataLoader ? (
           <div className="d-flex justify-content-center align-items-center">
             <WatchlistLoader />
           </div>
@@ -121,8 +83,8 @@ function MovieDetails() {
               <div className="col-md-4">
                 <img
                   src={
-                    movieDetails.Poster !== "N/A"
-                      ? movieDetails.Poster
+                    movies?.Poster !== "N/A"
+                      ? movies?.Poster
                       : `https://placehold.co/4000x2900?text=Poster+not+found!!`
                   }
                   alt="Not found"
@@ -132,7 +94,7 @@ function MovieDetails() {
               <div className="col-md-8 movie-title">
                 <div className="row movie-title-row">
                   <div className="col-12 movie-heading">
-                    {movieDetails.Title}
+                    {movies?.Title}
                   </div>
                 </div>
  
@@ -143,41 +105,41 @@ function MovieDetails() {
                       src="https://img.icons8.com/doodle/48/calendar--v2.png"
                       alt="calendar--v2"
                     />
-                    &nbsp;{movieDetails.Year} &nbsp; | &nbsp;
+                    &nbsp;{movies?.Year} &nbsp; | &nbsp;
                     <img
                       style={{ width: "20px", height: "20px" }}
                       src="https://img.icons8.com/dusk/64/movie-projector.png"
                       alt="movie-projector"
                     />
-                    &nbsp; {movieDetails.Runtime} &nbsp; | &nbsp;
+                    &nbsp; {movies?.Runtime} &nbsp; | &nbsp;
                     <img
                       style={{ width: "20px", height: "20px" }}
                       src="https://img.icons8.com/parakeet/48/certificate.png"
                       alt="certificate"
                     />
-                    &nbsp; {movieDetails.Rated}
+                    &nbsp; {movies?.Rated}
                   </div>
                 </div>
                 <div className="row rating d-flex justify-content-between mt-3">
                   <div className="col-md-3 rating-card">
-                    <img classname="img-fluid" src={imdb} alt="" />
+                    <img className="img-fluid" src={imdb} alt="" />
                     <div className="text-center p-4">
                       <i className="fa-solid fa-star"></i>&nbsp;
-                      {movieDetails?.Ratings[0]?.Value || "NA"}
+                      {movies?.Ratings[0]?.Value || "NA"}
                     </div>
                   </div>
                   <div className="col-md-3 rating-card">
-                    <img classname="img-fluid" src={rotten_tomatoes} alt="" />
+                    <img className="img-fluid" src={rotten_tomatoes} alt="" />
                     <div className="text-center p-4">
                       <i className="fa-solid fa-star"></i>&nbsp;
-                      {movieDetails?.Ratings[1]?.Value || "NA"}
+                      {movies?.Ratings[1]?.Value || "NA"}
                     </div>
                   </div>
                   <div className="col-md-3 rating-card">
-                    <img classname="img-fluid" src={meta} alt="" />
+                    <img className="img-fluid" src={meta} alt="" />
                     <div className="text-center p-4">
                       <i className="fa-solid fa-star"></i>&nbsp;
-                      {movieDetails?.Ratings[2]?.Value || "NA"}
+                      {movies?.Ratings[2]?.Value || "NA"}
                     </div>
                   </div>
                 </div>
@@ -208,7 +170,7 @@ function MovieDetails() {
                           />{" "}
                           Plot:
                         </div>
-                        <div className="col-md-10">{movieDetails.Plot}</div>
+                        <div className="col-md-10">{movies?.Plot}</div>
                       </div>
                       <div className="row mb-2">
                         <div className="col-md-2 d-flex align-items-center gap-1">
@@ -219,7 +181,7 @@ function MovieDetails() {
                           />{" "}
                           Actors:
                         </div>
-                        <div className="col-md-10">{movieDetails.Actors}</div>
+                        <div className="col-md-10">{movies?.Actors}</div>
                       </div>
                       <div className="row mb-2">
                         <div className="col-md-2 d-flex align-items-center gap-1">
@@ -230,7 +192,7 @@ function MovieDetails() {
                           />
                           Genre:
                         </div>
-                        <div className="col-md-10">{movieDetails.Genre}</div>
+                        <div className="col-md-10">{movies?.Genre}</div>
                       </div>
                       <div className="row mb-2">
                         <div className="col-md-2 d-flex align-items-center gap-1">
@@ -241,7 +203,7 @@ function MovieDetails() {
                           />
                           Director:
                         </div>
-                        <div className="col-md-10">{movieDetails.Director}</div>
+                        <div className="col-md-10">{movies?.Director}</div>
                       </div>
                     </TabPanel>
                   </TabContext>
@@ -256,7 +218,7 @@ function MovieDetails() {
           openErrorBox={openErrorBox}
           handleClose={handleClose}
           setOpenErrorBox={setOpenErrorBox}
-          handleClick={fetchMovieDetails}
+          handleClick={getMovieDetails}
           component={"movieDetails"}
         />
       </div>
