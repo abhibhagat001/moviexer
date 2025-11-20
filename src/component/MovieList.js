@@ -15,7 +15,9 @@ import { app } from '../firebase';
 import Tooltip from "@mui/material/Tooltip";
 import Dialogbox from "./Dialogbox";
  
-export default function MovieList(props) {
+function MovieList(props) {
+
+  
   const { darkMode } = useContext(themeContext);
   const wishlist = useContext(wishlistContext);
   const navigate = useNavigate();
@@ -223,4 +225,4 @@ export default function MovieList(props) {
 }
  
  
-
+export default React.memo(MovieList);

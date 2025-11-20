@@ -26,11 +26,15 @@ import imdb from "../Assests/IMDB.png";
 import meta from "../Assests/Metacritic.png";
 import Dialogbox from "./Dialogbox";
 import useFetchAPI from "../Hooks/useFetchAPI";
+import useLocalStorage from "../Hooks/useLocalStorage";
  
 function MovieDetails() {
   const { darkMode, setDarkMode } = useContext(themeContext);
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
   const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
+  const [storedValue, setStoredValue] = useLocalStorage('movieDetailsState',{
+    
+  });
   const location = useLocation();
   const movieData = location.state;
  
@@ -46,7 +50,7 @@ function MovieDetails() {
   }, [movieData]);
 
   useEffect(() => {
-    localStorage.setItem("movieDetailsState", JSON.stringify({ movies, movieData }));
+      setStoredValue({movies,movieData});
   }, [movies, movieData]);
  
  

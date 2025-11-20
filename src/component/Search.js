@@ -8,22 +8,19 @@ import Navbar from "./Navbar";
 import WatchlistLoader from "./WatchlistLoader";
 import Dialogbox from "./Dialogbox";
 import useFetchAPI from "../Hooks/useFetchAPI";
+import useLocalStorage from "../Hooks/useLocalStorage";
 
 
 export default function Search() {
 
-  const [searchTerm, setSearchTerm] = useState(() => {
-
-    return localStorage.getItem("searchTerm");
-
-  });
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const { darkMode } = useContext(themeContext);
   const [startSearching,setStartSearching] = useState(false);
   const [anim, setAnim] = useState(false);
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
   const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
+  const [storedValue, setStoredValue] = useLocalStorage('movieState',{});
 
 
   useEffect(()=>{
@@ -33,33 +30,29 @@ export default function Search() {
           setMovies(saved.movies);
           setCurrentPage(saved.currentPage);
           setStartSearching(saved.startSearching);
+          return;
       }
   },[]);
 
   useEffect(()=>{
-      localStorage.setItem('movieState',JSON.stringify({searchTerm,movies,currentPage,startSearching})); 
+      setStoredValue({searchTerm,movies,currentPage,startSearching});
   },[searchTerm,movies,currentPage,startSearching]);
  
+  
+
 
   //function to handle search box event
-
   function handleChange(e) {
-
     setSearchTerm(e.target.value);
-
   }
-
- 
 
   // On button click function invokes and search movies
 
   function handleClick() {
-
     setAnim(true);
     setStartSearching(true);
     getMovieDetails(searchTerm,currentPage);
     setTimeout(() => setAnim(false), 500);
-
   }
  
 
@@ -227,25 +220,12 @@ export default function Search() {
                 movies?.Search !== null &&
 
                 movies?.Search.map((movie, index) => (
-
-                  <div
-
-                    className="col-lg-3 col-sm-6 col-md-4 mb-4 py-3 movieCard"
-
-                    key={index}
-
-                  >
-
+                  <div className="col-lg-3 col-sm-6 col-md-4 mb-4 py-3 movieCard" key={movie.imdbID}>
                     <MovieList
-
                       movie={movie}
-
                       uid={localStorage.getItem("userId")}
-
                     />
-
                   </div>
-
                 ))}
 
             </div>
