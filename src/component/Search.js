@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import "../Design/search.css";
 import MovieList from "./MovieList";
 import { useContext } from "react";
@@ -38,8 +38,11 @@ export default function Search() {
       setStoredValue({searchTerm,movies,currentPage,startSearching});
   },[searchTerm,movies,currentPage,startSearching]);
  
-  
 
+  // Memoize filtered movies to avoid unnecessary re-renders
+  const filteredMovies = useMemo(() => {
+    return movies?.Search || [];
+  }, [movies]);
 
   //function to handle search box event
   function handleChange(e) {
@@ -80,9 +83,7 @@ export default function Search() {
  
 
   // On click of ENTER key search movie
-
   const handleKeyDown = (e) => {
-
     if (e.key === "Enter") {
        setCurrentPage(1);
         let endpoint = `/`;
@@ -94,9 +95,7 @@ export default function Search() {
 
         getMovieDetails(endpoint,params);
         setStartSearching(true);
-
     }
-
   };
 
   const handleSearch=()=>{
@@ -117,84 +116,43 @@ export default function Search() {
   // prevents closing the dialog box when user clicks outside dialog box
 
   const handleClose = (event, reason) => {
-
     if (reason && reason === "backdropClick") return;
-
     setOpenErrorBox(true);
-
   };
 
-
- 
-
- 
-
   return (
-
     <div className="d-flex flex-column min-vh-100">
-
       <div>
-
         {/* Navbar */}
-
         <Navbar>MOVIEXER</Navbar>
-
       </div>
 
- 
-
       <div
-
         className={
-
           darkMode
-
             ? "bg-dark darktheme text-light mainScreen flex-grow-1"
-
             : "lighttheme text-dark mainScreen flex-grow-1"
-
         }
-
       >
-
         {/* search box */}
-
         <div className="search-facility">
-
           <input
-
             type="search"
-
             placeholder="Enter movie name here..."
-
             className="form-control search-box fw-bold border border-1 border-dark"
-
             value={searchTerm}
-
             onKeyDown={handleKeyDown}
-
             onChange={handleChange}
-
           />
 
- 
-
           {/* search button */}
-
           <button
-
             onClick={handleSearch}
-
             type="button"
-
             className={!dataLoader ? "button" : "disabled-button"}
-
           >
-
             <span className="fw-bold">Search</span>
-
           </button>
-
         </div>
 
 
@@ -208,42 +166,23 @@ export default function Search() {
      
 
         {/* Render the movie list */}
-
         <div className="movies-list">
-
-          {
-
-            <div className="row">
-
-              {!dataLoader &&
-
-                movies?.Search !== null &&
-
-                movies?.Search.map((movie, index) => (
-                  <div className="col-lg-3 col-sm-6 col-md-4 mb-4 py-3 movieCard" key={movie.imdbID}>
-                    <MovieList
-                      movie={movie}
-                      uid={localStorage.getItem("userId")}
-                    />
-                  </div>
-                ))}
-
-            </div>
-
-          }
-
- 
+          <div className="row">
+            {!dataLoader && movies?.Search !== null && filteredMovies.map((movie) => (
+                <div
+                  className="col-lg-3 col-sm-6 col-md-4 mb-4 py-3 movieCard"
+                  key={movie.imdbID}
+                >
+                  <MovieList movie={movie} uid={localStorage.getItem("userId")} />
+                </div>
+            ))}
+          </div>
 
           {/* rendering the loader while fetching API */}
-
           {dataLoader && (
-
             <div className="d-flex justify-content-center">
-
               <WatchlistLoader />
-
             </div>
-
           )}
 
         </div>

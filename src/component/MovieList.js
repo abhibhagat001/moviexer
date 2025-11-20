@@ -15,8 +15,9 @@ import { app } from '../firebase';
 import Tooltip from "@mui/material/Tooltip";
 import Dialogbox from "./Dialogbox";
  
-function MovieList(props) {
+const MovieList = React.memo((props) => {
 
+  console.log('movie');
   
   const { darkMode } = useContext(themeContext);
   const wishlist = useContext(wishlistContext);
@@ -222,7 +223,7 @@ function MovieList(props) {
       </div>
     </div>
   );
-}
+})
  
  
-export default React.memo(MovieList);
+export default MovieList;
