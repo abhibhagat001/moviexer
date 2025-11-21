@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import "../Design/MovieDetails.css";
 import { themeContext } from "../context/ThemeContext";
 import Navbar from "./Navbar";
 import WatchlistLoader from "./WatchlistLoader";
+import Modal from "./Modal";
  
 // import * as React from "react";
 import Box from "@mui/material/Box";
@@ -12,13 +13,6 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
- 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
  
 //import images from assets folder
 import rotten_tomatoes from "../Assests/Rotten_Tomatoes.png";
@@ -31,23 +25,27 @@ import useLocalStorage from "../Hooks/useLocalStorage";
 function MovieDetails() {
   const { darkMode, setDarkMode } = useContext(themeContext);
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
-  const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
+  const [movies, setMovies, dataLoader, error, setError, getMovieDetails] = useFetchAPI();
   const [storedValue, setStoredValue] = useLocalStorage('movieDetailsState',{
     
   });
   const location = useLocation();
+  const navigate = useNavigate();
   const movieData = location.state;
  
   useEffect(() => {
-    // first check localStorage for cached details for this movie
-    const saved = JSON.parse(localStorage.getItem("movieDetailsState"));
-    if (saved && saved.movieData === movieData && saved.movies) {
-      setMovies(saved.movies);
-      return; 
-    }
+    if (!movieData) return;
 
+    const saved = JSON.parse(localStorage.getItem('movieDetailsState'));
+    if(saved && saved.movieData === movieData && saved.movies){
+        setMovies(saved.movies);
+        return;
+    }
+    
     getMovieDetails(`/`, { t: movieData, apikey: "2149ed44" });
-  }, [movieData]);
+  }, []);
+
+  
 
   useEffect(() => {
       setStoredValue({movies,movieData});
@@ -60,9 +58,13 @@ function MovieDetails() {
   };
  
   const handleClose = (event, reason) => {
-    if (reason && reason === "backdropClick") return;
-    setOpenErrorBox(true);
+    setError('');
+    navigate(-1)
   };
+
+ 
+
+
  
   return (
     <React.Fragment>
@@ -77,11 +79,21 @@ function MovieDetails() {
           <Navbar>MOVIEXER</Navbar>
         </div>
  
-        {dataLoader ? (
+        {dataLoader && (
           <div className="d-flex justify-content-center align-items-center">
             <WatchlistLoader />
           </div>
-        ) : (
+        )}
+
+         {error && (
+          <Modal handleClose={handleClose}>
+            <div>
+              {error}
+            </div>
+          </Modal>
+        )}
+            
+        {!dataLoader && !error && (
           <div className="container-fluid container-details flex-grow-1 d-flex justify-content-center align-items-center ">
             <div className="row detailsContainer d-flex align-items-center">
               <div className="col-md-4">
@@ -215,16 +227,8 @@ function MovieDetails() {
               </div>
             </div>
           </div>
-        )}
- 
-        <Dialogbox
-          error={error}
-          openErrorBox={openErrorBox}
-          handleClose={handleClose}
-          setOpenErrorBox={setOpenErrorBox}
-          handleClick={getMovieDetails}
-          component={"movieDetails"}
-        />
+        )
+      }
       </div>
     </React.Fragment>
   );

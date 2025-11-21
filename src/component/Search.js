@@ -9,6 +9,7 @@ import WatchlistLoader from "./WatchlistLoader";
 import Dialogbox from "./Dialogbox";
 import useFetchAPI from "../Hooks/useFetchAPI";
 import useLocalStorage from "../Hooks/useLocalStorage";
+import Modal from "./Modal";
 
 
 export default function Search() {
@@ -19,7 +20,7 @@ export default function Search() {
   const [startSearching,setStartSearching] = useState(false);
   const [anim, setAnim] = useState(false);
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
-  const [movies,setMovies,dataLoader,error,getMovieDetails] = useFetchAPI();
+  const [movies,setMovies,dataLoader,error,setError,getMovieDetails] = useFetchAPI();
   const [storedValue, setStoredValue] = useLocalStorage('movieState',{});
 
 
@@ -115,9 +116,8 @@ export default function Search() {
 
   // prevents closing the dialog box when user clicks outside dialog box
 
-  const handleClose = (event, reason) => {
-    if (reason && reason === "backdropClick") return;
-    setOpenErrorBox(true);
+  const handleClose = () => {
+        setError('');
   };
 
   return (
@@ -207,7 +207,6 @@ export default function Search() {
               }}
             />
           </div>
-
         )}
 
       </div>
@@ -216,19 +215,14 @@ export default function Search() {
 
       {/* Dialog box component */}
 
-      <Dialogbox
-
-        error={error}
-
-        openErrorBox={openErrorBox}
-
-        handleClose={handleClose}
-
-        setOpenErrorBox={setOpenErrorBox}
-
-        handleClick={handleClick}
-
-      />
+      {error && (
+        <Modal handleClose={handleClose}>
+          <div>
+            {error}
+          </div>
+          
+        </Modal>
+      )}
 
     </div>
 
