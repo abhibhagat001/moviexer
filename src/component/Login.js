@@ -97,7 +97,7 @@ export default function Login() {
                 className="fa-solid fa-key fw-bold"
                 style={{ color: "#b39517", fontWeight: "600" }}
               ></i>{" "}
-              You enter valid email id and password
+              You enter invalid email id and password
             </>
           );
         } else {

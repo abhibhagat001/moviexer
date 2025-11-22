@@ -18,13 +18,11 @@ import TabPanel from "@mui/lab/TabPanel";
 import rotten_tomatoes from "../Assests/Rotten_Tomatoes.png";
 import imdb from "../Assests/IMDB.png";
 import meta from "../Assests/Metacritic.png";
-import Dialogbox from "./Dialogbox";
 import useFetchAPI from "../Hooks/useFetchAPI";
 import useLocalStorage from "../Hooks/useLocalStorage";
  
 function MovieDetails() {
   const { darkMode, setDarkMode } = useContext(themeContext);
-  const [openErrorBox, setOpenErrorBox] = React.useState(false);
   const [movies, setMovies, dataLoader, error, setError, getMovieDetails] = useFetchAPI();
   const [storedValue, setStoredValue] = useLocalStorage('movieDetailsState',{
     
@@ -41,7 +39,7 @@ function MovieDetails() {
         setMovies(saved.movies);
         return;
     }
-    
+
     getMovieDetails(`/`, { t: movieData, apikey: "2149ed44" });
   }, []);
 
