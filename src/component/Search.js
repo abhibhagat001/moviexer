@@ -6,7 +6,6 @@ import { themeContext } from "../context/ThemeContext";
 import Pagination from "@mui/material/Pagination";
 import Navbar from "./Navbar";
 import WatchlistLoader from "./WatchlistLoader";
-import Dialogbox from "./Dialogbox";
 import useFetchAPI from "../Hooks/useFetchAPI";
 import useLocalStorage from "../Hooks/useLocalStorage";
 import Modal from "./Modal";
@@ -45,32 +44,22 @@ export default function Search() {
     return movies?.Search || [];
   }, [movies]);
 
+  // Safely compute total pages for pagination
+  const totalPages = movies?.totalResults ? Math.ceil(movies.totalResults / 10) : 1;
+
   //function to handle search box event
   function handleChange(e) {
     setSearchTerm(e.target.value);
   }
-
-  // On button click function invokes and search movies
-
-  function handleClick() {
-    setAnim(true);
-    setStartSearching(true);
-    getMovieDetails(searchTerm,currentPage);
-    setTimeout(() => setAnim(false), 500);
-  }
  
-
   useEffect(()=>{
-
     if(searchTerm) {
-      
         let endpoint = `/`;
         let params = {
           apiKey: "2149ed44",
           s: searchTerm.trim(),
           page: currentPage,
         }
-
 
         getMovieDetails(endpoint,params);
         window.scrollTo({
@@ -82,24 +71,33 @@ export default function Search() {
 
   },[currentPage]);
  
-
   // On click of ENTER key search movie
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-       setCurrentPage(1);
-        let endpoint = `/`;
-        let params = {
-          apiKey: "2149ed44",
-          s: searchTerm.trim(),
-          page: currentPage,
-        }
+    if (e.key !== "Enter") return;
 
-        getMovieDetails(endpoint,params);
-        setStartSearching(true);
+    if (searchTerm.trim() === '') {
+      alert( 'Please enter a movie name to search.');
+      return;
     }
+
+    setCurrentPage(1);
+    const endpoint = `/dfdsf`;
+    const params = {
+      apiKey: "2149ed44",
+      s: searchTerm.trim(),
+      page: 1,
+    };
+    getMovieDetails(endpoint, params);
+    setStartSearching(true);
   };
 
   const handleSearch=()=>{
+  
+    if(searchTerm.trim() === ''){
+      alert( 'Please enter a movie name to search.');
+      return;
+    }
+
     setAnim(true);
     setCurrentPage(1);
     setStartSearching(true);
@@ -115,7 +113,6 @@ export default function Search() {
  
 
   // prevents closing the dialog box when user clicks outside dialog box
-
   const handleClose = () => {
         setError('');
   };
@@ -160,15 +157,14 @@ export default function Search() {
           <div id="parentDivWelcomeImg">Start Searching Movies...</div>
         )}
  
-        {startSearching && movies?.Search.length===0 && !dataLoader && (
+        {startSearching && filteredMovies.length === 0 && !dataLoader && (
           <div id="parentDivWelcomeImg">Movies Not Found.</div>
         )}
      
-
         {/* Render the movie list */}
         <div className="movies-list">
           <div className="row">
-            {!dataLoader && movies?.Search !== null && filteredMovies.map((movie) => (
+            {!dataLoader && filteredMovies !== null && filteredMovies.map((movie) => (
                 <div
                   className="col-lg-3 col-sm-6 col-md-4 mb-4 py-3 movieCard"
                   key={movie.imdbID}
@@ -189,13 +185,10 @@ export default function Search() {
 
  
         {/* pagination component */}
-
-        {movies?.Search.length>0 && !dataLoader &&  (
-
+        {filteredMovies.length > 0 && !dataLoader &&  (
           <div id="bottom-pagination">
-
             <Pagination
-              count={parseInt(Math.ceil(movies?.totalResults / 10))}
+              count={parseInt(totalPages)}
               color="primary"
               onChange={(e, value) => setCurrentPage(value)}
               page={currentPage}
@@ -208,19 +201,14 @@ export default function Search() {
             />
           </div>
         )}
-
       </div>
 
- 
-
       {/* Dialog box component */}
-
       {error && (
         <Modal handleClose={handleClose}>
           <div>
             {error}
-          </div>
-          
+          </div> 
         </Modal>
       )}
 

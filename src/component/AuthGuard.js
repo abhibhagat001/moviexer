@@ -12,7 +12,6 @@ const AuthGuard = ({ children }) => {
   const checkToken = async () => {
     try {
       const token = localStorage.getItem("userId");
-      // let user = true;
       if (!token) {
         alert("User not authenticated");
         navigate(`/`);

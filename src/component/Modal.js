@@ -52,15 +52,18 @@ const Modal = ({ children,handleClose}) => {
         color: '#3A3A3A',
         lineHeight: 1.7,
         marginBottom: '8px',
+        fontWeight: 600,
+        display: 'flex',
+        alignItems: 'center',
     };
 
     return reactDom.createPortal(
         <div style={overlayStyle}>
             <div style={contentStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <h3 style={headerStyle}><i class="bi bi-exclamation-triangle-fill"></i> {'Alert'}</h3>
+                    <h3 style={headerStyle}><i class="bi bi-exclamation-triangle-fill"></i> {'Something Went Wrong!!'}</h3>
                 </div>
-                <div style={bodyStyle}>{children}</div>
+                <div style={bodyStyle}> <p>{children}</p></div>
                 <div><button className="btn btn-primary" onClick={handleClose}><i class="bi bi-x-circle-fill"></i> Close</button></div>
             </div>
         </div>,
