@@ -52,6 +52,7 @@ export default function Search() {
     setSearchTerm(e.target.value);
   }
  
+  
   useEffect(()=>{
     if(searchTerm) {
         let endpoint = `/`;
