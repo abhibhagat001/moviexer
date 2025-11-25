@@ -81,7 +81,7 @@ export default function Search() {
     }
 
     setCurrentPage(1);
-    const endpoint = `/dfdsf`;
+    const endpoint = `/`;
     const params = {
       apiKey: "2149ed44",
       s: searchTerm.trim(),
