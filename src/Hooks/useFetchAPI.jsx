@@ -1,4 +1,4 @@
-import React, { useEffect , useState} from "react";
+import { useCallback, useState } from "react";
 import api from "../component/AxiosInstance";
 
 const useFetchAPI = () =>{
@@ -7,14 +7,11 @@ const useFetchAPI = () =>{
     const [dataLoader, setDataLoader] = useState(false);
     const [error, setError] = useState("");
 
-    const getMovieDetails = async (endpoint,params) =>{
-
-            console.log('Fetching data from API...');
+    const getMovieDetails = useCallback(async (endpoint,params) =>{
         try{
             setDataLoader(true);
             const response = await api.get(endpoint,{params});
             const movieData = response.data;
-            console.log(movieData);
             setMovies(movieData);
         }catch(err){
             if(err.response){
@@ -28,7 +25,7 @@ const useFetchAPI = () =>{
              setDataLoader(false);
         }
 
-    }
+    }, [])
 
 
     return [movies,setMovies,dataLoader,error,setError,getMovieDetails];

@@ -8,17 +8,12 @@ import { userContext } from "../context/UserContext";
 import * as EmailValidator from "email-validator";
 import Logo from "../Assests/logo_.png";
 import { useContext } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import Inputs from "../UI/Inputs";
 import Dialogbox from "./Dialogbox";
- 
+
 const auth = getAuth(app);
 const db = getFirestore(app);
+
 export default function SignUp() {
   const user = useContext(userContext);
   const [errors, setErrors] = useState({});
@@ -31,69 +26,66 @@ export default function SignUp() {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
- 
   const navigation = useNavigate();
- 
+
   const validate = (name, value) => {
-    let error = "";
- 
+    let currentError = "";
+
     if (!value.trim()) {
-      error = name[0].toUpperCase() + name.slice(1) + " is required !!";
+      currentError = `${name[0].toUpperCase() + name.slice(1)} is required !!`;
     } else {
       switch (name) {
         case "userName":
           if (value.length < 3) {
-            error = `Username must be atleast 3 characters`;
+            currentError = "Username must be atleast 3 characters";
           }
           break;
         case "email":
-          if (!EmailValidator.validate(value)) error = "Invalid Email format";
+          if (!EmailValidator.validate(value)) currentError = "Invalid Email format";
           break;
         case "password":
           if (value.length < 6) {
-            error = "Password must be at least 6 characters long";
+            currentError = "Password must be at least 6 characters long";
           }
           break;
         default:
           break;
       }
     }
- 
-    return error;
+
+    return currentError;
   };
- 
-  // handling form data
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
- 
-    const error = validate(name, value);
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
+    const currentError = validate(name, value);
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: currentError }));
   };
- 
-  //handling form submit
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let newErrors = {};
- 
+    const newErrors = {};
+
     Object.keys(userData).forEach((key) => {
-      const error = validate(key, userData[key]);
-      if (error) newErrors[key] = error;
+      const currentError = validate(key, userData[key]);
+      if (currentError) newErrors[key] = currentError;
     });
- 
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
- 
+
     const { userName, email, password } = userData;
     setIsLoading(true);
     await createUserWithEmailAndPassword(auth, email, password)
-      .then((value) => {
-        setDoc(doc(db, "users", value.user.uid), {
+      .then(async (value) => {
+        await setDoc(doc(db, "users", value.user.uid), {
           username: userName,
-          email: email,
+          email,
         });
+        localStorage.setItem("myusername", userName);
         user.setName(userName);
         setIsLoading(false);
         navigation("/login");
@@ -104,158 +96,133 @@ export default function SignUp() {
         if (err.code === "auth/email-already-in-use") {
           setError(
             <>
-              <i
-                className="fa-solid fa-key fw-bold"
-                style={{ color: "#b39517", fontWeight: "600" }}
-              ></i>{" "}
-              You enter valid email id and password
+              <i className="fa-solid fa-key" style={{ color: "#b39517" }}></i>{" "}
+              This email is already in use
             </>
           );
           return;
-        } else if (err.code === "auth/network-request-failed") {
+        }
+
+        if (err.code === "auth/network-request-failed") {
           setError(
             <>
-              <i
-                class="fa-solid fa-wifi"
-                style={{ color: "#007BFF", fontWeight: "600" }}
-              ></i>{" "}
+              <i className="fa-solid fa-wifi" style={{ color: "#007BFF" }}></i>{" "}
               Please check your internet conncetion
             </>
           );
           return;
-        } else {
-          setError("Unknown Error");
         }
+
+        setError("Unknown Error");
       });
   };
- 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
-  };
- 
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
- 
+
   const handleClose = (event, reason) => {
     if (reason && reason === "backdropClick") return;
     setOpenErrorBox(true);
   };
- 
+
   return (
-    <div className="signup-container">
-      <div className="container">
-        <div className="row content d-flex justify-content-center align-items-center">
-          <div className="col-md-5">
-            <div className="p-5 sign-up">
-              <div className="d-flex justify-content-center">
-                <img src={Logo} alt="" className="SignUpImg" />
-              </div>
-              <h2 className="mb-4 text-center fw-bold text-dark">Sign Up</h2>
-              <form onSubmit={handleSubmit}>
-                <div>
-                  {/* Username input field */}
-                  <Inputs
-                    htmlFor={"username"}
-                    labelClassName={"form-label fw-semibold text-dark mb-2"}
-                    id="username"
-                    type="text"
-                    name="userName"
-                    value={userData.userName}
-                    placeholder="Enter a username"
-                    onChange={handleChange}
-                    error={errors.userName}
-                  >
-                    <i className="fa-solid fa-user"></i> Username:
-                  </Inputs>
- 
-                  {/* email input field */}
-                  <Inputs
-                    htmlFor={"email"}
-                    labelClassName={"form-label fw-semibold text-dark mb-2"}
-                    id="email"
-                    type="text"
-                    name="email"
-                    value={userData.email}
-                    placeholder="Enter a email"
-                    onChange={handleChange}
-                    error={errors.email}
-                  >
-                    <i className="fa-solid fa-envelope"></i> Email:
-                  </Inputs>
- 
-                  {/* password input field */}
-                  <Inputs
-                    htmlFor={"password"}
-                    labelClassName={"form-label fw-semibold text-dark mb-2"}
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={userData.password}
-                    placeholder="Enter a password"
-                    onChange={handleChange}
-                    error={errors.password}
-                    showPassword={showPassword}
-                    togglePassword={togglePassword}
-                  >
-                    <i className="fa-solid fa-lock"></i> Password:
-                  </Inputs>
-                </div>
- 
-                {/* singUp button */}
-                {!isLoading && (
-                  <button
-                    type="submit"
-                    className="btn btn-warning text-dark fw-bold bg-gradient w-100 mt-4"
-                  >
-                    Sign up
-                  </button>
-                )}
- 
-                {/* SignUp button loader */}
-                {isLoading && (
-                  <button
-                    className="btn btn-warning w-100 mt-4"
-                    type="button"
-                    disabled
-                  >
-                    <span
-                      className="spinner-grow spinner-grow-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Account creating...
-                  </button>
-                )}
-              </form>
- 
-              {/* Link for Login page */}
-              <div className="text-center sign-in text-dark mt-3 fw-semibold ">
-                Already have an account ?{"  "}
-                <Link
-                  to="/login"
-                  className="text-primary text-decoration-underline fw-bold"
-                >
-                  Login Here
-                </Link>
-              </div>
- 
-              {/* Dailog box to show proper error on UI */}
-              <Dialogbox
-                error={error}
-                openErrorBox={openErrorBox}
-                handleClose={handleClose}
-                setOpenErrorBox={setOpenErrorBox}
-                component={"SingUp"}
-              />
-            </div>
+    <div className="auth-page signup-container">
+      <div className="auth-shell">
+        <div className="auth-showcase">
+          <span className="auth-kicker">Create your account</span>
+          <h1>Build a modern movie browsing experience from your very first login.</h1>
+          <p>
+            Sign up to search titles, review details, and organize your watchlist
+            with a cleaner and more professional interface.
+          </p>
+        </div>
+
+        <div className="auth-card sign-up">
+          <div className="d-flex justify-content-center">
+            <img src={Logo} alt="Moviexer logo" className="SignUpImg" />
           </div>
+
+          <h2 className="mb-2 text-center fw-bold text-dark">Sign Up</h2>
+          <p className="auth-form-copy text-center">
+            Create an account and start saving titles.
+          </p>
+
+          <form onSubmit={handleSubmit}>
+            <Inputs
+              htmlFor={"username"}
+              labelClassName={"form-label fw-semibold text-dark mb-2"}
+              id="username"
+              type="text"
+              name="userName"
+              value={userData.userName}
+              placeholder="Enter your username"
+              onChange={handleChange}
+              error={errors.userName}
+            >
+              <i className="fa-solid fa-user"></i> Username
+            </Inputs>
+
+            <Inputs
+              htmlFor={"email"}
+              labelClassName={"form-label fw-semibold text-dark mb-2"}
+              id="email"
+              type="text"
+              name="email"
+              value={userData.email}
+              placeholder="Enter your email"
+              onChange={handleChange}
+              error={errors.email}
+            >
+              <i className="fa-solid fa-envelope"></i> Email
+            </Inputs>
+
+            <Inputs
+              htmlFor={"password"}
+              labelClassName={"form-label fw-semibold text-dark mb-2"}
+              id="password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={userData.password}
+              placeholder="Create a secure password"
+              onChange={handleChange}
+              error={errors.password}
+              showPassword={showPassword}
+              togglePassword={togglePassword}
+            >
+              <i className="fa-solid fa-lock"></i> Password
+            </Inputs>
+
+            {!isLoading && (
+              <button type="submit" className="auth-submit-btn w-100 mt-4">
+                Sign Up
+              </button>
+            )}
+
+            {isLoading && (
+              <button className="auth-submit-btn auth-submit-btn-muted w-100 mt-4" type="button" disabled>
+                <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Creating account...
+              </button>
+            )}
+          </form>
+
+          <div className="text-center sign-in text-dark mt-3 fw-semibold">
+            Already have an account?{" "}
+            <Link to="/login" className="auth-link">
+              Login Here
+            </Link>
+          </div>
+
+          <Dialogbox
+            error={error}
+            openErrorBox={openErrorBox}
+            handleClose={handleClose}
+            setOpenErrorBox={setOpenErrorBox}
+            component={"SingUp"}
+          />
         </div>
       </div>
     </div>
   );
 }
- 
- 

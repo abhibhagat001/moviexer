@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import reactDom from "react-dom";
 
 
@@ -61,10 +61,10 @@ const Modal = ({ children,handleClose}) => {
         <div style={overlayStyle}>
             <div style={contentStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <h3 style={headerStyle}><i class="bi bi-exclamation-triangle-fill"></i> {'Something Went Wrong!!'}</h3>
+                    <h3 style={headerStyle}><i className="bi bi-exclamation-triangle-fill"></i> {"Something Went Wrong!!"}</h3>
                 </div>
                 <div style={bodyStyle}> <p>{children}</p></div>
-                <div><button className="btn btn-primary" onClick={handleClose}><i class="bi bi-x-circle-fill"></i> Close</button></div>
+                <div><button className="btn btn-primary" onClick={handleClose}><i className="bi bi-x-circle-fill"></i> Close</button></div>
             </div>
         </div>,
         document.getElementById('modal-root')

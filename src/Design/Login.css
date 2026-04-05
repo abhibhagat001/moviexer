@@ -1,64 +1,115 @@
-.login{
-
-    background: url('https://img.freepik.com/free-vector/seamless-pattern-with-cinema-elements_225004-1154.jpg?t=st=1740469422~exp=1740473022~hmac=819dc771e309ab8a6b6a17bbf0e7da7d998daa8888a6024b8a0e6ea0986a8e0c&w=1060') center center no-repeat;
-
-    background-size: cover;
-
-    background-position: center;
-
-    background-repeat: no-repeat;
-
-    background-attachment: fixed;
-
-    background-color: #f0f0f0;
-
+.auth-page {
+  min-height: 100vh;
+  padding: 28px 16px;
+  background:
+    radial-gradient(circle at top left, rgba(180, 79, 46, 0.2), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(39, 84, 138, 0.16), transparent 24%),
+    linear-gradient(135deg, #151821 0%, #1d2230 100%);
 }
 
- 
-
-.login-container{
-
-    border-radius: 20px;
-
-    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-
+.auth-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(360px, 480px);
+  gap: 28px;
+  align-items: center;
+  min-height: calc(100vh - 56px);
 }
 
- 
-
-.logoImg{
-
-    width: 150px;
-
+.auth-showcase,
+.auth-card {
+  border-radius: 30px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-lg);
 }
 
- 
+.auth-showcase {
+  padding: 42px;
+  color: #f6f7fb;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
+.auth-kicker {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 
+.auth-showcase h1 {
+  margin: 18px 0 14px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
 
+.auth-showcase p {
+  max-width: 44ch;
+  color: #c5cddd;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
 
+.login-container,
+.sign-up {
+  padding: 34px !important;
+  background: rgba(255, 251, 247, 0.96);
+  border: 1px solid rgba(21, 24, 33, 0.08);
+}
 
+.auth-form-copy {
+  margin-bottom: 24px;
+  color: var(--text-muted);
+}
 
- 
+.logoImg,
+.SignUpImg {
+  width: 120px;
+  margin-bottom: 16px;
+}
 
+.auth-submit-btn {
+  min-height: 52px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #b44f2e 0%, #d6804b 100%);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(180, 79, 46, 0.22);
+}
 
+.auth-submit-btn-muted {
+  background: #d7c8c1;
+  color: #6e635c;
+  box-shadow: none;
+}
 
- 
+.auth-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+}
 
+@media (max-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
 
- 
+  .auth-showcase {
+    padding: 28px;
+  }
 
- 
-
-
- 
-
-
- 
-
- 
-
-
-
-
- 
+  .auth-card {
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}

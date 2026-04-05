@@ -30,7 +30,7 @@ function Inputs({
           value={value}
           placeholder={placeholder}
           onChange={onChange}
-          className={`form-control  ${error ? "inputs" : ""}`}
+          className={`form-control ${error ? "inputs" : ""}`}
         />
       )}
  
@@ -44,7 +44,7 @@ function Inputs({
               value={value}
               placeholder={placeholder}
               onChange={onChange}
-              className={`form-control  ${error ? "inputs" : ""}`}
+              className={`form-control ${error ? "inputs" : ""}`}
             />
  
             {/* show password */}

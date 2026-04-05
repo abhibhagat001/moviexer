@@ -1,293 +1,164 @@
-
- 
-
-.movie-card{
-
-    border-radius: 10px;
-
-    box-shadow: 0px 4px 5px 0px #888;
-
-    margin: 0 5px;
-
-    overflow: hidden;    
-
+.movie-card {
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(21, 24, 33, 0.08);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
- 
-
-img{
-
-    width: 100%;
-
-    height: auto;
-
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px rgba(18, 24, 33, 0.16);
 }
 
- 
-
-.blur{
-
-    filter: blur(5px);
-
+.movie-card-dark {
+  background: rgba(28, 31, 39, 0.84);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
- 
-
-.card-title{
-
-    font-size: 14px;
-
+.movie-poster-wrap {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  background:
+    linear-gradient(180deg, rgba(16, 18, 23, 0.18), rgba(16, 18, 23, 0.36)),
+    linear-gradient(135deg, #d9d4cd 0%, #bfc7d6 100%);
 }
 
- 
-
-.card-body{
-
-    padding: 20px;
-
-    cursor: pointer;
-
+.movie-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
- 
-
-.img-fluid{
-
-    height: 300px;
-
+.movie-card:hover .movie-poster {
+  transform: scale(1.04);
 }
 
- 
-
-.flip-card-inner {
-
-position: relative;
-
-width: 100%;
-
-height: 300px;
-
-text-align: center;
-
-transition: transform 0.6s;
-
-transform-style: preserve-3d;
-
-box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-
+.movie-card-overlay {
+  position: absolute;
+  inset: auto 16px 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(18, 22, 29, 0.88) 0%,
+    rgba(18, 22, 29, 0.56) 100%
+  );
+  color: #fff;
+  backdrop-filter: blur(10px);
 }
 
- 
-
-.flip-card:hover .flip-card-inner {
-
-transform: rotateY(180deg);
-
+.movie-card-overlay span,
+.movie-card-overlay strong {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
- 
-
-.flip-card-back {
-
-background-color: black;
-
-color: white;
-
-transform: rotateY(180deg);
-
- 
-
+.card-body {
+  padding: 18px;
 }
 
- 
-
-.flip-card-back {
-
-   display: flex;
-
-   justify-content: center;
-
-   align-items: center;
-
-   gap: 28px;
-
+.movie-card-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
- 
-
-.flip-card-front {
-
-background-color: #bbb;
-
-color: black;
-
+.movie-chip {
+  display: inline-flex;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(39, 84, 138, 0.1);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
- 
-
-.flip-card-front, .flip-card-back {
-
-position: absolute;
-
-width: 100%;
-
-height:300px;
-
--webkit-backface-visibility: hidden;
-
-backface-visibility: hidden;
-
+.movie-chip-soft {
+  background: rgba(180, 79, 46, 0.12);
+  color: var(--brand-strong);
 }
 
- 
+.movie-card-dark .movie-chip {
+  background: rgba(113, 154, 213, 0.14);
+  color: #b9d5ff;
+}
 
-.button-62 {
+.movie-card-dark .movie-chip-soft {
+  background: rgba(244, 217, 203, 0.12);
+  color: #ffd7c8;
+}
 
-    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+.card-title {
+  min-height: 52px;
+  margin-bottom: 16px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+}
 
-    border: 0;
+.movie-card-dark .card-title {
+  color: #f6f7fb;
+}
 
-    border-radius: 12px;
+.movie-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
 
-    color: #FFFFFF;
+.movie-card-button {
+  min-height: 44px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #b44f2e 0%, #d17d49 100%);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
 
-    cursor: pointer;
+.movie-card-button:hover {
+  transform: translateY(-1px);
+}
 
-    display: inline-block;
+.movie-card-button-secondary {
+  background: rgba(39, 84, 138, 0.12);
+  color: var(--accent);
+}
 
-    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+.movie-card-button-danger {
+  background: rgba(180, 79, 46, 0.12);
+  color: var(--brand-strong);
+}
 
-    font-size: 12px;
+.movie-card-dark .movie-card-button-secondary {
+  background: rgba(113, 154, 213, 0.14);
+  color: #bfd7ff;
+}
 
-    font-weight: 500;
+.movie-card-dark .movie-card-button-danger {
+  background: rgba(244, 217, 203, 0.12);
+  color: #ffd7c8;
+}
 
-    line-height: 2.5;
-
-    outline: transparent;
-
-    padding: 0 1rem;
-
-    text-align: center;
-
-    text-decoration: none;
-
-    transition: box-shadow .2s ease-in-out;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    touch-action: manipulation;
-
-    white-space: nowrap;
-
+@media (max-width: 768px) {
+  .movie-poster-wrap {
+    aspect-ratio: 2 / 3;
   }
-
- 
-
-  .card-btn{
-
-    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
-
-    border: 0;
-
-    border-radius: 12px;
-
-    color: #FFFFFF;
-
-    cursor: pointer;
-
-    display: inline-block;
-
-    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-
-    font-size: 12px;
-
-    font-weight: 500;
-
-    line-height: 2.5;
-
-    outline: transparent;
-
-    padding: 0 1rem;
-
-    margin-left: 32px;
-
-    text-align: center;
-
-    text-decoration: none;
-
-    transition: box-shadow .2s ease-in-out;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    touch-action: manipulation;
-
-    white-space: nowrap;
-
-  }
-
- 
-
-  .button-62:not([disabled]):focus {
-
-    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
-
-  }
-
- 
-
-  .button-62:not([disabled]):hover {
-
-    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
-
-  }
-
-
-.cls{
-
-    display: flex;
-
-    gap:10px;
-
-    align-items: center;
-
-}
-
- 
-
-@media (max-width:768px){
-
-    .cls{
-
-      display: none;
-
-    }
-
-   }
-
- 
-
-@media (min-width:786px) {
-
-    .hamburger-menu{
-
-        display: none;
-
-    }
-
-}
-
- 
-
-@media only screen and (max-width:785px) {
-
-    .hamburger-menu{
-
-        display: block !important;
-
-    }
-
 }

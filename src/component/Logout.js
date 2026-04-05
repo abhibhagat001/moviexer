@@ -2,7 +2,6 @@ import * as React from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Avatar } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 import Fade from "@mui/material/Fade";
 import Tooltip from "@mui/material/Tooltip";
@@ -12,18 +11,33 @@ import { useEffect } from "react";
  
 // Logout functionality
 const db = getFirestore(app);
-export default function Logout({ userName }) {
+export default function Logout() {
   const [myuserName, setMyUserName] = React.useState("");
  
   useEffect(() => {
     async function fetchMyAPI() {
       try {
-        const DocRef = doc(db, "users", localStorage.getItem("userId"));
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          setMyUserName("User");
+          return;
+        }
+
+        const DocRef = doc(db, "users", userId);
         const docSnap = await getDoc(DocRef);
-        localStorage.setItem("myusername", docSnap.data().username);
-        setMyUserName(docSnap.data().username);
+
+        if (!docSnap.exists()) {
+          setMyUserName("User");
+          return;
+        }
+
+        const userData = docSnap.data();
+        const safeUserName = userData?.username || "User";
+        localStorage.setItem("myusername", safeUserName);
+        setMyUserName(safeUserName);
       } catch (e) {
-        alert(e);
+        console.log(e);
+        setMyUserName("User");
       }
     }
  
@@ -55,18 +69,30 @@ export default function Logout({ userName }) {
         TransitionComponent={Fade}
         TransitionProps={{ timeout: 600 }}
       >
-        <Avatar
+        <button
+          type="button"
+          className="profile-trigger"
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
-          sx={{
-            bgcolor: deepOrange[500],
-            width: 35,
-            height: 35,
-          }}
           onClick={handleClick}
-        ></Avatar>
+        >
+          <div className="profile-copy">
+            <strong className="profile-name">{myuserName || "User"}</strong>
+          </div>
+          <Avatar
+            sx={{
+              bgcolor: "#b44f2e",
+              width: 38,
+              height: 38,
+              fontSize: "1rem",
+              fontWeight: 700,
+            }}
+          >
+            {(myuserName || "U").charAt(0).toUpperCase()}
+          </Avatar>
+        </button>
       </Tooltip>
       <Menu
         id="basic-menu"
@@ -77,7 +103,7 @@ export default function Logout({ userName }) {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleClose}>
           <div
             style={{
               display: "flex",
@@ -92,7 +118,12 @@ export default function Logout({ userName }) {
         </MenuItem>
  
         <Link to="/login" style={{ textDecoration: "none" }}>
-          <MenuItem onClick={logoutDashboard}>
+          <MenuItem
+            onClick={() => {
+              logoutDashboard();
+              handleClose();
+            }}
+          >
             <div
               style={{
                 display: "flex",

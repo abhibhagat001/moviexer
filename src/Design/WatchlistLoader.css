@@ -1,32 +1,84 @@
-
-.loader {
-
-    width: 40px;
-
-    height: 40px;
-
-    margin-top: 150px;
-
-    --c:no-repeat linear-gradient(orange 0 0);
-
-    background: var(--c),var(--c),var(--c),var(--c);
-
-    background-size: 21px 21px;
-
-    animation: l5 1.5s infinite cubic-bezier(0.3,1,0,1);
-
+.modern-loader {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  width: 180px;
+  height: 180px;
 }
 
- 
+.modern-loader-ring {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top-color: rgba(180, 79, 46, 0.9);
+  border-right-color: rgba(39, 84, 138, 0.8);
+  animation: loaderSpin 1.15s linear infinite;
+}
 
-@keyframes l5 {
+.modern-loader-core {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #b44f2e 0%, #d6804b 100%);
+  color: #fff;
+  font-size: 1.35rem;
+  box-shadow: 0 18px 34px rgba(180, 79, 46, 0.28);
+}
 
-   0%   {background-position: 0    0,100% 0   ,100% 100%,0 100%}
+.modern-loader-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0.7;
+}
 
-   33%  {background-position: 0    0,100% 0   ,100% 100%,0 100%;width:60px;height: 60px}
+.modern-loader-orb-one {
+  width: 34px;
+  height: 34px;
+  top: 22px;
+  left: 28px;
+  background: rgba(180, 79, 46, 0.42);
+  animation: loaderFloat 2.2s ease-in-out infinite;
+}
 
-   66%  {background-position: 100% 0,100% 100%,0    100%,0 0   ;width:60px;height: 60px}
+.modern-loader-orb-two {
+  width: 28px;
+  height: 28px;
+  right: 32px;
+  bottom: 42px;
+  background: rgba(39, 84, 138, 0.42);
+  animation: loaderFloat 2.4s ease-in-out infinite reverse;
+}
 
-   100% {background-position: 100% 0,100% 100%,0    100%,0 0   }
+.modern-loader-text {
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text-muted);
+}
 
+.bg-dark .modern-loader-text,
+.darktheme .modern-loader-text {
+  color: #d3daea;
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loaderFloat {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.08);
+  }
 }

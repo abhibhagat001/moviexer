@@ -1,0 +1,24 @@
+<svg width="800" height="1200" viewBox="0 0 800 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1200" rx="40" fill="#171A21"/>
+  <rect width="800" height="1200" rx="40" fill="url(#paint0_linear)"/>
+  <circle cx="667" cy="168" r="170" fill="#FFFFFF" fill-opacity="0.05"/>
+  <circle cx="154" cy="1045" r="220" fill="#FFFFFF" fill-opacity="0.04"/>
+  <rect x="88" y="112" width="624" height="976" rx="32" fill="#11141A" fill-opacity="0.48" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+  <rect x="168" y="214" width="464" height="500" rx="24" fill="#E8D5C9" fill-opacity="0.08"/>
+  <path d="M314.333 598L388.333 506L449.333 579L503 514L586.333 626H214.333L314.333 598Z" fill="#D4A68C"/>
+  <circle cx="270" cy="326" r="46" fill="#F2C94C"/>
+  <rect x="168" y="768" width="266" height="20" rx="10" fill="#FFFFFF" fill-opacity="0.88"/>
+  <rect x="168" y="808" width="380" height="16" rx="8" fill="#FFFFFF" fill-opacity="0.22"/>
+  <rect x="168" y="848" width="312" height="16" rx="8" fill="#FFFFFF" fill-opacity="0.18"/>
+  <rect x="168" y="920" width="168" height="44" rx="22" fill="#B44F2E"/>
+  <text x="190" y="949" fill="#FFF8F2" font-family="DM Sans, Arial, sans-serif" font-size="22" font-weight="700">MOVIEXER</text>
+  <text x="168" y="1026" fill="#FFFFFF" fill-opacity="0.92" font-family="Space Grotesk, Arial, sans-serif" font-size="48" font-weight="700">Poster unavailable</text>
+  <text x="168" y="1072" fill="#C6CDD8" font-family="DM Sans, Arial, sans-serif" font-size="24">A polished fallback for missing artwork</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="68" y1="44" x2="740" y2="1150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D2230"/>
+      <stop offset="0.52" stop-color="#151821"/>
+      <stop offset="1" stop-color="#2B3546"/>
+    </linearGradient>
+  </defs>
+</svg>

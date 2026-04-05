@@ -1,237 +1,326 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../Design/MovieDetails.css";
 import { themeContext } from "../context/ThemeContext";
+import { wishlistContext } from "../context/WatchList";
 import Navbar from "./Navbar";
 import WatchlistLoader from "./WatchlistLoader";
 import Modal from "./Modal";
- 
-// import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
- 
-//import images from assets folder
-import rotten_tomatoes from "../Assests/Rotten_Tomatoes.png";
+import rottenTomatoes from "../Assests/Rotten_Tomatoes.png";
 import imdb from "../Assests/IMDB.png";
 import meta from "../Assests/Metacritic.png";
+import posterFallback from "../Assests/posterFallback.svg";
 import useFetchAPI from "../Hooks/useFetchAPI";
 import useLocalStorage from "../Hooks/useLocalStorage";
- 
+import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
+import { app } from "../firebase";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Dialogbox from "./Dialogbox";
+
 function MovieDetails() {
-  const { darkMode, setDarkMode } = useContext(themeContext);
-  const [movies, setMovies, dataLoader, error, setError, getMovieDetails] = useFetchAPI();
-  const [storedValue, setStoredValue] = useLocalStorage('movieDetailsState',{
-    
-  });
+  const { darkMode } = useContext(themeContext);
+  const wishlist = useContext(wishlistContext);
+  const [movies, setMovies, dataLoader, error, setError, getMovieDetails] =
+    useFetchAPI();
+  const [, setStoredValue] = useLocalStorage("movieDetailsState", {});
   const location = useLocation();
   const navigate = useNavigate();
   const movieData = location.state;
- 
+  const [value, setValue] = useState("1");
+  const [posterSrc, setPosterSrc] = useState(posterFallback);
+  const [open, setOpen] = useState(false);
+  const [openErrorBox, setOpenErrorBox] = useState(false);
+  const [wishlistError, setWishlistError] = useState("");
+  const db = getFirestore(app);
+  const userId = localStorage.getItem("userId");
+  const docRef = userId ? doc(db, "watchlists", userId) : null;
+
   useEffect(() => {
     if (!movieData) return;
 
-    const saved = JSON.parse(localStorage.getItem('movieDetailsState'));
-    if(saved && saved.movieData === movieData && saved.movies){
-        setMovies(saved.movies);
-        return;
+    const saved = JSON.parse(localStorage.getItem("movieDetailsState"));
+    if (saved && saved.movieData === movieData && saved.movies) {
+      setMovies(saved.movies);
+      return;
     }
 
-    getMovieDetails(`/`, { t: movieData, apikey: "2149ed44" });
-  }, []);
-
-  
+    getMovieDetails("/", { t: movieData, apikey: "2149ed44" });
+  }, [movieData, setMovies, getMovieDetails]);
 
   useEffect(() => {
-      setStoredValue({movies,movieData});
-  }, [movies, movieData]);
- 
- 
-  const [value, setValue] = React.useState("1");
+    setStoredValue({ movies, movieData });
+  }, [movies, movieData, setStoredValue]);
+
+  useEffect(() => {
+    setPosterSrc(
+      movies?.Poster && movies.Poster !== "N/A" ? movies.Poster : posterFallback
+    );
+  }, [movies]);
+
+  const isSavedToWatchlist = wishlist.movies.some(
+    (item) => item.movie?.imdbID === movies?.imdbID
+  );
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
- 
-  const handleClose = (event, reason) => {
-    setError('');
-    navigate(-1)
+
+  const handleClose = () => {
+    setError("");
+    navigate(-1);
   };
 
- 
+  const handleWishlistClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
+  const handleDialogClose = () => {
+    setOpenErrorBox(false);
+  };
 
- 
+  const saveWatchlistToFirestore = async (uid, watchlistItems) => {
+    if (!docRef) {
+      return;
+    }
+
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      await setDoc(docRef, {
+        movies: watchlistItems,
+        userId: uid,
+      });
+      return;
+    }
+
+    await setDoc(docRef, {
+      movies: watchlistItems,
+      userId: uid,
+    });
+  };
+
+  const handleAddToWatchlist = async () => {
+    if (!navigator.onLine) {
+      setWishlistError(
+        <>
+          <i className="fa-solid fa-wifi" style={{ color: "#007BFF" }}></i>{" "}
+          Please check your internet connection before adding this movie to your
+          watchlist.
+        </>
+      );
+      setOpenErrorBox(true);
+      return;
+    }
+
+    if (!movies?.Title || isSavedToWatchlist) {
+      return;
+    }
+
+    try {
+      const watchlistItem = {
+        movie: {
+          Title: movies.Title,
+          Year: movies.Year,
+          imdbID: movies.imdbID,
+          Type: movies.Type,
+          Poster: movies.Poster,
+        },
+        uid: userId,
+      };
+
+      const updatedWatchlist = [...wishlist.movies, watchlistItem];
+      wishlist.setMovies(updatedWatchlist);
+      await saveWatchlistToFirestore(userId, updatedWatchlist);
+      setOpen(true);
+    } catch (saveError) {
+      console.log(saveError);
+      setWishlistError(
+        <>
+          <i className="fa-solid fa-triangle-exclamation" style={{ color: "#b44f2e" }}></i>{" "}
+          Unable to save this movie right now. Please try again.
+        </>
+      );
+      setOpenErrorBox(true);
+    }
+  };
+
+  const ratings = [
+    { label: "IMDb", image: imdb, value: movies?.Ratings?.[0]?.Value || "NA" },
+    {
+      label: "Rotten Tomatoes",
+      image: rottenTomatoes,
+      value: movies?.Ratings?.[1]?.Value || "NA",
+    },
+    {
+      label: "Metacritic",
+      image: meta,
+      value: movies?.Ratings?.[2]?.Value || "NA",
+    },
+  ];
+
   return (
-    <React.Fragment>
-      <div
-        className={
-          darkMode
-            ? "bg-dark text-light mainContainer d-flex flex-column min-vh-100"
-            : "bg-light text-dark mainContainer d-flex flex-column min-vh-100"
-        }
-      >
-        <div className="header">
-          <Navbar>MOVIEXER</Navbar>
-        </div>
- 
-        {dataLoader && (
-          <div className="d-flex justify-content-center align-items-center">
-            <WatchlistLoader />
-          </div>
-        )}
-
-         {error && (
-          <Modal handleClose={handleClose}>
-            <div>
-              {error}
-            </div>
-          </Modal>
-        )}
-            
-        {!dataLoader && !error && (
-          <div className="container-fluid container-details flex-grow-1 d-flex justify-content-center align-items-center ">
-            <div className="row detailsContainer d-flex align-items-center">
-              <div className="col-md-4">
-                <img
-                  src={
-                    movies?.Poster !== "N/A"
-                      ? movies?.Poster
-                      : `https://placehold.co/4000x2900?text=Poster+not+found!!`
-                  }
-                  alt="Not found"
-                  className="rounded-5 poster"
-                />
-              </div>
-              <div className="col-md-8 movie-title">
-                <div className="row movie-title-row">
-                  <div className="col-12 movie-heading">
-                    {movies?.Title}
-                  </div>
-                </div>
- 
-                <div className="row movie-runlength d-flex align-items-center">
-                  <div className="col-12 movie-runlength d-flex align-items-center">
-                    <img
-                      style={{ width: "20px", height: "20px" }}
-                      src="https://img.icons8.com/doodle/48/calendar--v2.png"
-                      alt="calendar--v2"
-                    />
-                    &nbsp;{movies?.Year} &nbsp; | &nbsp;
-                    <img
-                      style={{ width: "20px", height: "20px" }}
-                      src="https://img.icons8.com/dusk/64/movie-projector.png"
-                      alt="movie-projector"
-                    />
-                    &nbsp; {movies?.Runtime} &nbsp; | &nbsp;
-                    <img
-                      style={{ width: "20px", height: "20px" }}
-                      src="https://img.icons8.com/parakeet/48/certificate.png"
-                      alt="certificate"
-                    />
-                    &nbsp; {movies?.Rated}
-                  </div>
-                </div>
-                <div className="row rating d-flex justify-content-between mt-3">
-                  <div className="col-md-3 rating-card">
-                    <img className="img-fluid" src={imdb} alt="" />
-                    <div className="text-center p-4">
-                      <i className="fa-solid fa-star"></i>&nbsp;
-                      {movies?.Ratings[0]?.Value || "NA"}
-                    </div>
-                  </div>
-                  <div className="col-md-3 rating-card">
-                    <img className="img-fluid" src={rotten_tomatoes} alt="" />
-                    <div className="text-center p-4">
-                      <i className="fa-solid fa-star"></i>&nbsp;
-                      {movies?.Ratings[1]?.Value || "NA"}
-                    </div>
-                  </div>
-                  <div className="col-md-3 rating-card">
-                    <img className="img-fluid" src={meta} alt="" />
-                    <div className="text-center p-4">
-                      <i className="fa-solid fa-star"></i>&nbsp;
-                      {movies?.Ratings[2]?.Value || "NA"}
-                    </div>
-                  </div>
-                </div>
- 
-                <Box
-                  sx={{ width: "100%", typography: "body1", fontSize: "13px" }}
-                >
-                  <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                      <TabList
-                        onChange={handleChange}
-                        aria-label="lab API tabs example"
-                      >
-                        <Tab
-                          label="Overview"
-                          value="1"
-                          sx={{ fontSize: "14px", fontWeight: "600" }}
-                        />
-                      </TabList>
-                    </Box>
-                    <TabPanel value="1" sx={{ fontSize: "16px" }}>
-                      <div className="row mb-2">
-                        <div className="col-md-2 d-flex align-items-center gap-1">
-                          <img
-                            style={{ width: "25px" }}
-                            src="https://img.icons8.com/plasticine/100/film-reel.png"
-                            alt="film-reel"
-                          />{" "}
-                          Plot:
-                        </div>
-                        <div className="col-md-10">{movies?.Plot}</div>
-                      </div>
-                      <div className="row mb-2">
-                        <div className="col-md-2 d-flex align-items-center gap-1">
-                          <img
-                            style={{ width: "25px" }}
-                            src="https://img.icons8.com/color/48/theatre-mask.png"
-                            alt="theatre-mask"
-                          />{" "}
-                          Actors:
-                        </div>
-                        <div className="col-md-10">{movies?.Actors}</div>
-                      </div>
-                      <div className="row mb-2">
-                        <div className="col-md-2 d-flex align-items-center gap-1">
-                          <img
-                            style={{ width: "20px" }}
-                            src="https://img.icons8.com/color/48/comedy.png"
-                            alt="comedy"
-                          />
-                          Genre:
-                        </div>
-                        <div className="col-md-10">{movies?.Genre}</div>
-                      </div>
-                      <div className="row mb-2">
-                        <div className="col-md-2 d-flex align-items-center gap-1">
-                          <img
-                            style={{ width: "25px" }}
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-director-video-production-flaticons-flat-flat-icons-2.png"
-                            alt="external-director-video-production-flaticons-flat-flat-icons-2"
-                          />
-                          Director:
-                        </div>
-                        <div className="col-md-10">{movies?.Director}</div>
-                      </div>
-                    </TabPanel>
-                  </TabContext>
-                </Box>
-              </div>
-            </div>
-          </div>
-        )
+    <div
+      className={
+        darkMode
+          ? "bg-dark text-light mainContainer d-flex flex-column min-vh-100"
+          : "lighttheme text-dark mainContainer d-flex flex-column min-vh-100"
       }
-      </div>
-    </React.Fragment>
+    >
+      <Navbar>MOVIEXER</Navbar>
+
+      {dataLoader && (
+        <div className="d-flex justify-content-center align-items-center py-5">
+          <WatchlistLoader />
+        </div>
+      )}
+
+      {error && (
+        <Modal handleClose={handleClose}>
+          <div>{error}</div>
+        </Modal>
+      )}
+
+      {!dataLoader && !error && (
+        <section className="details-page">
+          <div className="details-grid">
+            <div className="poster-panel">
+              <img
+                src={posterSrc}
+                alt={movies?.Title || "Poster not found"}
+                className="poster"
+                onError={() => setPosterSrc(posterFallback)}
+              />
+            </div>
+
+            <div className="details-panel">
+              <div className="details-heading-row">
+                <span className="details-badge">{movies?.Type || "Movie"}</span>
+                <h1 className="movie-heading">{movies?.Title}</h1>
+                <p className="details-subtext">
+                  A polished overview of cast, plot, and ratings for quick decision
+                  making.
+                </p>
+                <div className="details-actions">
+                  <button
+                    type="button"
+                    className={`details-watchlist-btn ${
+                      isSavedToWatchlist ? "details-watchlist-btn-saved" : ""
+                    }`}
+                    onClick={handleAddToWatchlist}
+                    disabled={isSavedToWatchlist}
+                  >
+                    <i
+                      className={`fa-solid ${
+                        isSavedToWatchlist ? "fa-check" : "fa-bookmark"
+                      }`}
+                    ></i>
+                    {isSavedToWatchlist ? "Added to watchlist" : "Add to watchlist"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="facts-row">
+                <div className="fact-pill">
+                  <i className="fa-regular fa-calendar"></i>
+                  {movies?.Year || "NA"}
+                </div>
+                <div className="fact-pill">
+                  <i className="fa-solid fa-film"></i>
+                  {movies?.Runtime || "NA"}
+                </div>
+                <div className="fact-pill">
+                  <i className="fa-solid fa-certificate"></i>
+                  {movies?.Rated || "NA"}
+                </div>
+              </div>
+
+              <div className="rating-grid">
+                {ratings.map((rating) => (
+                  <div className="rating-card" key={rating.label}>
+                    <img className="rating-logo" src={rating.image} alt={rating.label} />
+                    <div className="rating-value">
+                      <i className="fa-solid fa-star"></i>
+                      {rating.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Box sx={{ width: "100%", typography: "body1" }}>
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList onChange={handleChange} aria-label="movie tabs">
+                      <Tab
+                        label="Overview"
+                        value="1"
+                        sx={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          textTransform: "none",
+                        }}
+                      />
+                    </TabList>
+                  </Box>
+                  <TabPanel value="1" sx={{ padding: "24px 0 0" }}>
+                    <div className="info-list">
+                      <div className="info-row">
+                        <span>Plot</span>
+                        <p>{movies?.Plot || "NA"}</p>
+                      </div>
+                      <div className="info-row">
+                        <span>Actors</span>
+                        <p>{movies?.Actors || "NA"}</p>
+                      </div>
+                      <div className="info-row">
+                        <span>Genre</span>
+                        <p>{movies?.Genre || "NA"}</p>
+                      </div>
+                      <div className="info-row">
+                        <span>Director</span>
+                        <p>{movies?.Director || "NA"}</p>
+                      </div>
+                    </div>
+                  </TabPanel>
+                </TabContext>
+              </Box>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        onClose={handleWishlistClose}
+      >
+        <Alert
+          onClose={handleWishlistClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", fontSize: "15px" }}
+        >
+          <b>{movies?.Title}</b> is added to watchlist
+        </Alert>
+      </Snackbar>
+
+      <Dialogbox
+        error={wishlistError}
+        openErrorBox={openErrorBox}
+        handleClose={handleDialogClose}
+        setOpenErrorBox={setOpenErrorBox}
+        component={"movieDetails"}
+      />
+    </div>
   );
 }
- 
+
 export default MovieDetails;
- 
- 

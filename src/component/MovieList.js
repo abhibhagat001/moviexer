@@ -11,82 +11,87 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { app } from '../firebase';
+import { app } from "../firebase";
 import Tooltip from "@mui/material/Tooltip";
 import Dialogbox from "./Dialogbox";
- 
-const MovieList = React.memo((props) => {
+import posterFallback from "../Assests/posterFallback.svg";
 
-  console.log('movie');
-  
+const MovieList = React.memo((props) => {
   const { darkMode } = useContext(themeContext);
   const wishlist = useContext(wishlistContext);
   const navigate = useNavigate();
-  const [IsLoading, setIsLoading] = useState(false);
   const [openErrorBox, setOpenErrorBox] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+  const [posterSrc, setPosterSrc] = useState(
+    props.movie.Poster && props.movie.Poster !== "N/A"
+      ? props.movie.Poster
+      : posterFallback
+  );
   const db = getFirestore(app);
   const docRef = doc(db, "watchlists", props.uid);
+
+  React.useEffect(() => {
+    setPosterSrc(
+      props.movie.Poster && props.movie.Poster !== "N/A"
+        ? props.movie.Poster
+        : posterFallback
+    );
+  }, [props.movie.Poster]);
+
   const saveWatchlistToFirestore = async (uid, watchlist) => {
     try {
       const docSnap = await getDoc(docRef);
- 
       if (docSnap.exists) {
         await setDoc(docRef, {
           movies: watchlist,
           userId: uid,
         });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (saveError) {
+      console.log(saveError);
       setError(
         <>
-          <i
-            class="fa-solid fa-wifi"
-            style={{ color: "#007BFF", fontWeight: "600" }}
-          ></i>{" "}
+          <i className="fa-solid fa-wifi" style={{ color: "#007BFF" }}></i>{" "}
           Internal server error
         </>
       );
     }
   };
- 
+
   const handleClick = () => {
     if (!navigator.onLine) {
       setOpenErrorBox(true);
       setError(
         <>
-          <i
-            class="fa-solid fa-wifi"
-            style={{ color: "#007BFF", fontWeight: "600" }}
-          ></i>{" "}
+          <i className="fa-solid fa-wifi" style={{ color: "#007BFF" }}></i>{" "}
           Please check your internet conncetion before adding movie to
           watchlist.
         </>
       );
       return;
     }
-    for (let i = 0; i < wishlist.movies.length; i++) {
+
+    for (let i = 0; i < wishlist.movies.length; i += 1) {
       if (wishlist.movies[i].movie.Title === props.movie.Title) {
         alert("Movie is already present in watchlist");
-        return 0;
+        return;
       }
     }
- 
+
     const updatedWatchlist = [...wishlist.movies, props];
     wishlist.setMovies(updatedWatchlist);
     saveWatchlistToFirestore(props.uid, updatedWatchlist);
     setOpen(true);
   };
- 
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
   };
- 
+
   const action = (
     <React.Fragment>
       <Button color="secondary" size="small" onClick={handleClose}></Button>
@@ -100,119 +105,110 @@ const MovieList = React.memo((props) => {
       </IconButton>
     </React.Fragment>
   );
- 
-  async function fetchMovieDetails(title) {
+
+  function fetchMovieDetails(title) {
     navigate(`/movieDetails/${props.movie.Title}`, { state: title });
   }
- 
+
   return (
-    <div className="movie-card">
-      <div className="flip-card">
-        <div className="flip-card-inner">
-          <div className="flip-card-front">
-            <motion.img
-              className={IsLoading ? "img-fluid blur" : "img-fluid"}
-              style={{ position: "relative" }}
-              onClick={() => fetchMovieDetails(props.movie.Title)}
-              src={
-                props.movie.Poster !== "N/A"
-                  ? props.movie.Poster
-                  : "https://placehold.co/600x400"
-              }
-              alt={`The movie titled: ${props.movie.Title}`}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-          <div className="flip-card-back">
-            <div>
-              <button
-                className={props.isWatchlist ? "card-btn" : "button-62"}
-                alt=""
-                onClick={() => fetchMovieDetails(props.movie.Title)}
-              >
-                <i className="fa-solid fa-circle-info"></i> More Info
-              </button>
-            </div>
-            <div>
-              {props.isWatchlist ? (
-                <div></div>
-              ) : (
-                <button
-                  className="button-62"
-                  alt=""
-                  onClick={() => handleClick()}
-                >
-                  <i className="fa-solid fa-circle-plus"></i> WatchList
-                </button>
-              )}
-            </div>
-          </div>
+    <div className={`movie-card ${darkMode ? "movie-card-dark" : ""}`}>
+      <div
+        className="movie-poster-wrap"
+        onClick={() => fetchMovieDetails(props.movie.Title)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            fetchMovieDetails(props.movie.Title);
+          }
+        }}
+      >
+        <motion.img
+          className="movie-poster"
+          src={posterSrc}
+          alt={`The movie titled: ${props.movie.Title}`}
+          onError={() => setPosterSrc(posterFallback)}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+        />
+        <div className="movie-card-overlay">
+          <span>{props.movie.Type || "Movie"}</span>
+          <strong>{props.movie.Year}</strong>
         </div>
       </div>
-      <div className={darkMode ? "card-body bg-dark" : "card-body bg-light"}>
-        <h5
-          className={
-            darkMode ? "text-white card-title" : "text-dark card-title"
-          }
-        >
+
+      <div className="card-body">
+        <div className="movie-card-meta">
+          <span className="movie-chip">{props.movie.Year}</span>
+          <span className="movie-chip movie-chip-soft">
+            {props.isWatchlist ? "Saved" : "Discover"}
+          </span>
+        </div>
+
+        <h5 className="card-title">
           <Tooltip title={props.movie.Title}>
             <>
-              {props.movie.Title.length < 25
+              {props.movie.Title.length < 32
                 ? props.movie.Title
-                : props.movie.Title.slice(0, 25) + "..."}
+                : `${props.movie.Title.slice(0, 32)}...`}
             </>
           </Tooltip>
         </h5>
-        <div
-          className={
-            darkMode ? "text-white card-title" : "text-dark card-title"
-          }
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          {props.movie.Year}
+
+        <div className="movie-card-actions">
+          <button
+            className="movie-card-button movie-card-button-secondary"
+            onClick={() => fetchMovieDetails(props.movie.Title)}
+          >
+            <i className="fa-solid fa-circle-info"></i> Details
+          </button>
+
           {props.isWatchlist ? (
-            <div>
-              <i
-                className="fa-solid fa-trash"
-                onClick={() => {
-                  if (!navigator.onLine) {
-                    setOpenErrorBox(true);
-                    setOpen(false);
-                    setError(
-                      <>
-                        <i
-                          class="fa-solid fa-wifi"
-                          style={{ color: "#007BFF", fontWeight: "600" }}
-                        ></i>{" "}
-                        Please check your internet conncetion before removing
-                        the movie from watchlist.
-                      </>
-                    );
-                    return;
-                  }
-                  props.removeFromWatchList(props.movie.Title);
-                  props.setOpen(true);
-                }}
-              ></i>
-            </div>
+            <button
+              className="movie-card-button movie-card-button-danger"
+              onClick={() => {
+                if (!navigator.onLine) {
+                  setOpenErrorBox(true);
+                  setOpen(false);
+                  setError(
+                    <>
+                      <i className="fa-solid fa-wifi" style={{ color: "#007BFF" }}></i>{" "}
+                      Please check your internet conncetion before removing the
+                      movie from watchlist.
+                    </>
+                  );
+                  return;
+                }
+                props.removeFromWatchList(props.movie.Title);
+                props.setOpen(true);
+              }}
+            >
+              <i className="fa-solid fa-trash"></i> Remove
+            </button>
           ) : (
-            <div></div>
+            <button className="movie-card-button" onClick={() => handleClick()}>
+              <i className="fa-solid fa-bookmark"></i> Watchlist
+            </button>
           )}
         </div>
- 
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={4000}
+          onClose={handleClose}
+          action={action}
+        >
           <Alert
             onClose={handleClose}
             severity="success"
             variant="filled"
-            sx={{ width: "100%", fontSize: "16px" }}
+            sx={{ width: "100%", fontSize: "15px" }}
           >
             <b>{props.movie.Title}</b> is added to watchlist
           </Alert>
         </Snackbar>
- 
+
         <Dialogbox
           error={error}
           openErrorBox={openErrorBox}
@@ -223,7 +219,6 @@ const MovieList = React.memo((props) => {
       </div>
     </div>
   );
-})
- 
- 
+});
+
 export default MovieList;

@@ -22,12 +22,29 @@ export default function TemporaryDrawer() {
   useEffect(() => {
     async function fetchMyAPI() {
       try {
-        const DocRef = doc(db, "users", localStorage.getItem("userId"));
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          setSidebarName("User");
+          setSidebarEmail("No email available");
+          return;
+        }
+
+        const DocRef = doc(db, "users", userId);
         const docSnap = await getDoc(DocRef);
-        setSidebarName(docSnap.data().username);
-        setSidebarEmail(docSnap.data().email);
+
+        if (!docSnap.exists()) {
+          setSidebarName("User");
+          setSidebarEmail("No email available");
+          return;
+        }
+
+        const userData = docSnap.data();
+        setSidebarName(userData?.username || "User");
+        setSidebarEmail(userData?.email || "No email available");
       } catch (e) {
         console.log(e);
+        setSidebarName("User");
+        setSidebarEmail("No email available");
       }
     }
  
